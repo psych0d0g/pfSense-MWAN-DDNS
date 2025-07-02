@@ -1,4 +1,4 @@
-# pfSense-Resilient-MWAN-DynDNS: High-Availability Multi-WAN Dynamic DNS
+# pfSense-MWAN-DynDNS: High-Availability Multi-WAN Dynamic DNS for incoming round-robin
 
 This project provides a robust, high-availability Dynamic DNS (DynDNS) solution for pfSense firewalls with multiple WAN connections (Multi-WAN). It intelligently manages a single DNS hostname with multiple IP addresses (A/AAAA Round-Robin records) and automatically removes IPs from the record when their corresponding gateway goes down.
 
