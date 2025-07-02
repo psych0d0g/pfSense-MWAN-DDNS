@@ -1,4 +1,4 @@
-# pfSense-MWAN-DDNS: Advanced Multi-WAN Dynamic DNS for pfSense
+# pfSense-Resilient-MWAN-DynDNS: High-Availability Multi-WAN Dynamic DNS
 
 This project provides a robust, high-availability Dynamic DNS (DynDNS) solution for pfSense firewalls with multiple WAN connections (Multi-WAN). It intelligently manages a single DNS hostname with multiple IP addresses (A/AAAA Round-Robin records) and automatically removes IPs from the record when their corresponding gateway goes down.
 
@@ -13,6 +13,7 @@ This solution is designed to be fully integrated with pfSense's gateway monitori
 * **Visual Status Feedback**: Intentionally uses a quirk in the pfSense DynDNS dashboard widget to color-code cached IPs: **green** for healthy/online and **red** for unhealthy/offline.
 * **Fully Upgrade-Safe**: Does not modify any core pfSense system files, ensuring your configuration survives system updates.
 * **PowerDNS Integration**: Natively updates DNS records via the PowerDNS API.
+* **Portable Architecture**: Platform-specific code is abstracted into a class, making it significantly easier to port the solution to other systems like OPNsense or OpenWrt.
 
 ## How It Works
 
@@ -43,7 +44,7 @@ Place both `gateway_watcher.py` and `pdns_dyndns.py` in the `/root/` directory o
 
 ### Step 2: Configure the Updater Script (`pdns_dyndns.py`)
 
-Open `pdns_dyndns.py` and edit the configuration variables at the top of the file:
+Open `pdns_dyndns.py` and edit the configuration variables at the main function of the file (inside the `if __name__ == "__main__":` block):
 
 * `api_url`: The base URL of your PowerDNS API (e.g., `http://192.168.1.10:8081/api/v1`).
 * `api_key`: Your PowerDNS API key.
@@ -121,3 +122,16 @@ While the system is designed to be fully automatic, you can run the main updater
 * `--force-update`: Bypasses the internal state check and forces the script to send a DNS update, even if no IP or gateway status changes have been detected. This is used by the watcher daemon to ensure an update happens after a gateway event.
 * `--quiet`: Suppresses detailed output for a cleaner execution log.
 * `--reason REASON`: A text string used for logging purposes to indicate why the script was run. The watcher daemon uses this to specify that the trigger was a "Gateway-Event".
+
+## Porting to Other Platforms (e.g., OPNsense, OpenWrt)
+
+The scripts have been refactored to make porting to other operating systems as easy as possible. All platform-specific code is contained within the `PfSensePlatform` class.
+
+To adapt this solution for a new platform, you only need to:
+
+1.  Create a new class (e.g., `OPNsensePlatform`) that inherits from `BasePlatform`.
+2.  Implement all the methods defined in `BasePlatform` with logic specific to your target OS. For example, you would replace the code that reads `/conf/config.xml` with code that reads OPNsense's configuration, and replace the `dpinger` socket logic if OPNsense uses a different monitoring method.
+3.  In the `if __name__ == "__main__":` block of both scripts, change the line `platform = PfSensePlatform()` to instantiate your new class (e.g., `platform = OPNsensePlatform()`).
+4.  Adapt the installation method (e.g., use OPNsense's startup script mechanism instead of `shellcmd`).
+
+The core DNS update and state management logic will work without modification.
