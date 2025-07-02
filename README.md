@@ -44,7 +44,7 @@ Place both `gateway_watcher.py` and `pdns_dyndns.py` in the `/root/` directory o
 
 ### Step 2: Configure the Updater Script (`pdns_dyndns.py`)
 
-Open `pdns_dyndns.py` and edit the configuration variables at the main function of the file (inside the `if __name__ == "__main__":` block):
+Open `pdns_dyndns.py` and edit the configuration variables at the bottom of the file (inside the `if __name__ == "__main__":` block):
 
 * `api_url`: The base URL of your PowerDNS API (e.g., `http://192.168.1.10:8081/api/v1`).
 * `api_key`: Your PowerDNS API key.
