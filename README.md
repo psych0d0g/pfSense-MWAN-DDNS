@@ -32,7 +32,7 @@ This solution consists of two Python scripts that work together:
 * A pfSense firewall with multiple WAN connections configured.
 * A PowerDNS server with its API enabled.
 * SSH access or console access to your pfSense firewall.
-* Python 3.11 or newer installed on pfSense (`pkg install python311`).
+* Python 3.11 or newer installed on pfSense (`pkg install python3.11`).
 
 ## Installation & Configuration
 
@@ -80,7 +80,7 @@ This step configures pfSense to use your script. You must create one "Custom" Dy
 Navigate to **System > Package Manager > Available Packages** and install the following two packages:
 
 1.  `shellcmd`: This allows us to run our watcher daemon safely on boot.
-2.  `python311` (or your preferred Python 3 version): If not already installed.
+2.  `python3.11` (or your preferred Python 3 version): If not already installed.
 
 ### Step 5: Configure the Watcher Daemon
 
@@ -89,7 +89,7 @@ This final step makes the system event-driven and upgrade-safe.
 1.  Navigate to **Services > Shellcmd**.
 2.  Click **Add**.
 3.  Configure the command:
-    * **Command**: `/usr/local/bin/python311 /root/gateway_watcher.py &` (Adjust the python version if needed. The `&` is crucial for running it in the background).
+    * **Command**: `/usr/local/bin/python3.11 /root/gateway_watcher.py &` (Adjust the python version if needed. The `&` is crucial for running it in the background).
     * **Shellcmd Type**: `shellcmd`. This ensures it runs late in the boot process.
     * **Description**: `DynDNS Gateway Watcher Daemon`.
 4.  Click **Save**.
@@ -106,7 +106,7 @@ Once configured, the system is fully automatic. To verify it's working:
     3.  The corresponding IP in the pfSense "Dynamic DNS Status" widget turn **red**.
 * **Manual Execution**: You can test the main script at any time by running it from the console:
     ```shell
-    /usr/local/bin/python311 /root/pdns_dyndns.py --force-update
+    /usr/local/bin/python3.11 /root/pdns_dyndns.py --force-update
     ```
 
 ## Script Usage (`pdns_dyndns.py`)
